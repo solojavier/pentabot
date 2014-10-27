@@ -10,18 +10,22 @@ import (
 	"github.com/solojavier/pentabot/bots/spherobot"
 )
 
-var (
+type Bot struct {
 	pebbleAdaptor *pebble.PebbleAdaptor
 	pebbleDriver  *pebble.PebbleDriver
-)
-
-func Init() {
-	pebbleAdaptor = pebble.NewPebbleAdaptor("pebble")
-	pebbleDriver = pebble.NewPebbleDriver(pebbleAdaptor, "pebble")
+	spheroBot     *spherobot.Bot
 }
 
-func Work() {
-	gobot.On(pebbleDriver.Event("accel"), func(data interface{}) {
+func New(spheroBot *spherobot.Bot) *Bot {
+	var b Bot
+	b.pebbleAdaptor = pebble.NewPebbleAdaptor("pebble")
+	b.pebbleDriver = pebble.NewPebbleDriver(b.pebbleAdaptor, "pebble")
+	b.spheroBot = spheroBot
+	return &b
+}
+
+func (b *Bot) Work() {
+	gobot.On(b.pebbleDriver.Event("accel"), func(data interface{}) {
 		values := strings.Split(data.(string), ",")
 		x, _ := strconv.ParseFloat(values[0], 64)
 		y, _ := strconv.ParseFloat(values[1], 64)
@@ -29,16 +33,16 @@ func Work() {
 		speed := math.Max(math.Abs(x), math.Abs(y))
 		heading := 180.0 - (math.Atan2(y, x) * (180.0 / math.Pi))
 
-		spherobot.Roll(scalePebble(speed), uint16(heading))
+		b.spheroBot.Roll(scalePebble(speed), uint16(heading))
 	})
 }
 
-func Devices() []gobot.Device {
-	return []gobot.Device{pebbleDriver}
+func (b *Bot) Devices() []gobot.Device {
+	return []gobot.Device{b.pebbleDriver}
 }
 
-func Connection() gobot.Connection {
-	return pebbleAdaptor
+func (b *Bot) Connection() gobot.Connection {
+	return b.pebbleAdaptor
 }
 
 func scalePebble(position float64) uint8 {

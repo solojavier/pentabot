@@ -10,52 +10,36 @@ import (
 )
 
 type Bot interface {
-	Init()
 	Work()
-	Devices()
-	Connection()
+	Devices() []gobot.Device
+	Connection() gobot.Connection
 }
 
 var (
 	currentStage string
 	devices      []gobot.Device
 	connections  []gobot.Connection
+	bots         map[string]Bot
 )
 
 func Init() {
-	currentStage = "powerUp"
+	currentStage = "sphero"
+	bots = make(map[string]Bot)
 
-	//TODO: Remove duplication
-	spherobot.Init()
-	arduinobot.Init()
-	joystickbot.Init()
-	leapbot.Init()
-	pebblebot.Init()
+	bots["arduino"] = arduinobot.New()
+	bots["sphero"] = spherobot.New(bots["arduino"].(*arduinobot.Bot))
+	bots["pebble"] = pebblebot.New(bots["sphero"].(*spherobot.Bot))
+	bots["leap"] = leapbot.New(bots["sphero"].(*spherobot.Bot))
+	bots["joystick"] = joystickbot.New(bots["sphero"].(*spherobot.Bot))
 
-	devices = append(devices, spherobot.Devices()...)
-	devices = append(devices, arduinobot.Devices()...)
-	devices = append(devices, joystickbot.Devices()...)
-	devices = append(devices, leapbot.Devices()...)
-	devices = append(devices, pebblebot.Devices()...)
-
-	connections = append(connections, spherobot.Connection())
-	connections = append(connections, arduinobot.Connection())
-	connections = append(connections, joystickbot.Connection())
-	connections = append(connections, leapbot.Connection())
-	connections = append(connections, pebblebot.Connection())
+	for _, bot := range bots {
+		devices = append(devices, bot.Devices()...)
+		connections = append(connections, bot.Connection())
+	}
 }
 
 func Work() {
-	switch currentStage {
-	case "powerUp":
-		spherobot.Work()
-	case "pebble":
-		pebblebot.Work()
-	case "leap":
-		leapbot.Work()
-	case "joystick":
-		joystickbot.Work()
-	}
+	bots[currentStage].Work()
 }
 
 func Devices() []gobot.Device {
@@ -68,13 +52,15 @@ func Connections() []gobot.Connection {
 
 func UpdateStage(stage string) string {
 	currentStage = stage
-	Work()
+	if currentStage != "commander" {
+		Work()
+	}
 	return currentStage
 }
 
 func Move(direction string) string {
 	if currentStage == "commander" {
-		return spherobot.Move(direction)
+		return bots["sphero"].(*spherobot.Bot).Move(direction)
 	} else {
 		return "Not moving. Commander stage not active."
 	}

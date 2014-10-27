@@ -8,18 +8,22 @@ import (
 	"github.com/solojavier/pentabot/bots/spherobot"
 )
 
-var (
+type Bot struct {
 	leapAdaptor *leap.LeapMotionAdaptor
 	leapDriver  *leap.LeapMotionDriver
-)
-
-func Init() {
-	leapAdaptor = leap.NewLeapMotionAdaptor("leap", "127.0.0.1:6437")
-	leapDriver = leap.NewLeapMotionDriver(leapAdaptor, "leap")
+	spheroBot   *spherobot.Bot
 }
 
-func Work() {
-	gobot.On(leapDriver.Event("message"), func(data interface{}) {
+func New(spheroBot *spherobot.Bot) *Bot {
+	var b Bot
+	b.leapAdaptor = leap.NewLeapMotionAdaptor("leap", "127.0.0.1:6437")
+	b.leapDriver = leap.NewLeapMotionDriver(b.leapAdaptor, "leap")
+	b.spheroBot = spheroBot
+	return &b
+}
+
+func (b *Bot) Work() {
+	gobot.On(b.leapDriver.Event("message"), func(data interface{}) {
 		hands := data.(leap.Frame).Hands
 
 		if len(hands) > 0 {
@@ -28,19 +32,19 @@ func Work() {
 			speed := math.Max(math.Abs(x), math.Abs(z))
 			heading := 180.0 - (math.Atan2(z, x) * (180.0 / math.Pi))
 
-			spherobot.Roll(scaleLeap(speed), uint16(heading))
+			b.spheroBot.Roll(scaleLeap(speed), uint16(heading))
 		} else {
-			spherobot.Stop()
+			b.spheroBot.Stop()
 		}
 	})
 }
 
-func Devices() []gobot.Device {
-	return []gobot.Device{leapDriver}
+func (b *Bot) Devices() []gobot.Device {
+	return []gobot.Device{b.leapDriver}
 }
 
-func Connection() gobot.Connection {
-	return leapAdaptor
+func (b *Bot) Connection() gobot.Connection {
+	return b.leapAdaptor
 }
 
 func scaleLeap(position float64) uint8 {
