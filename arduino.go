@@ -17,7 +17,7 @@ var (
 )
 
 func InitArduino() {
-	firmataAdaptor = firmata.NewFirmataAdaptor("arduino", "/dev/tty.usbmodem14521")
+	firmataAdaptor = firmata.NewFirmataAdaptor("arduino", "/dev/tty.usbmodem14141")
 
 	led1 = gpio.NewLedDriver(firmataAdaptor, "led", "4")
 	led2 = gpio.NewLedDriver(firmataAdaptor, "led", "5")

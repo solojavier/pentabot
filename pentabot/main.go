@@ -8,7 +8,9 @@ import (
 
 func main() {
 	gbot := gobot.NewGobot()
-	api.NewAPI(gbot).Start()
+	api := api.NewAPI(gbot)
+	api.Port = "8080"
+	api.Start()
 
 	pentabot.Init()
 

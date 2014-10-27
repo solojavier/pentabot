@@ -15,18 +15,21 @@ func Init() {
 	InitSphero()
 	InitArduino()
 	InitJoystick()
+	InitLeap()
+	InitPebble()
 }
 
+// Execute work according to current Stage ... spheroWhatever.Work()
 func Work() {}
 
 //TODO: Make this better
 func Devices() []gobot.Device {
-	return []gobot.Device{spheroDriver, led1, led2, led3, led4, led5, led6, joystickDriver}
+	return []gobot.Device{spheroDriver, led1, led2, led3, led4, led5, led6, joystickDriver, leapDriver, pebbleDriver}
 }
 
 //TODO: Make this better
 func Connections() []gobot.Connection {
-	return []gobot.Connection{spheroAdaptor, firmataAdaptor, joystickAdaptor}
+	return []gobot.Connection{spheroAdaptor, firmataAdaptor, joystickAdaptor, leapAdaptor, pebbleAdaptor}
 }
 
 //TODO: Change this to NextStage
