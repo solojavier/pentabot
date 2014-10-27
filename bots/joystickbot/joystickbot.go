@@ -1,4 +1,4 @@
-package pentabot
+package joystickbot
 
 import (
 	"math"
@@ -6,6 +6,7 @@ import (
 
 	"github.com/hybridgroup/gobot"
 	"github.com/hybridgroup/gobot/platforms/joystick"
+	"github.com/solojavier/pentabot/bots/spherobot"
 )
 
 var (
@@ -15,33 +16,38 @@ var (
 	joystickDriver  *joystick.JoystickDriver
 )
 
-func InitJoystick() {
+func Init() {
 	x = 0
 	y = 0
 
 	joystickAdaptor = joystick.NewJoystickAdaptor("ps3")
 	joystickDriver = joystick.NewJoystickDriver(joystickAdaptor, "ps3", "./config/dualshock3.json")
 
-	gobot.Every(100*time.Millisecond, func() {
-		if CurrentStage() == "joystick" {
-			speed := math.Max(math.Abs(x), math.Abs(y))
-			heading := 180.0 - (math.Atan2(y, x) * (180.0 / math.Pi))
+}
 
-			spheroDriver.Roll(scaleJoystick(speed), uint16(heading))
-		}
+func Work() {
+	gobot.Every(100*time.Millisecond, func() {
+		speed := math.Max(math.Abs(x), math.Abs(y))
+		heading := 180.0 - (math.Atan2(y, x) * (180.0 / math.Pi))
+
+		spherobot.Roll(scaleJoystick(speed), uint16(heading))
 	})
 
 	gobot.On(joystickDriver.Event("right_x"), func(data interface{}) {
-		if CurrentStage() == "joystick" {
-			x = float64(data.(int16)) - 128
-		}
+		x = float64(data.(int16)) - 128
 	})
 
 	gobot.On(joystickDriver.Event("right_y"), func(data interface{}) {
-		if CurrentStage() == "joystick" {
-			y = float64(data.(int16)) - 128
-		}
+		y = float64(data.(int16)) - 128
 	})
+}
+
+func Devices() []gobot.Device {
+	return []gobot.Device{joystickDriver}
+}
+
+func Connection() gobot.Connection {
+	return joystickAdaptor
 }
 
 func scaleJoystick(position float64) uint8 {

@@ -1,6 +1,7 @@
-package pentabot
+package arduinobot
 
 import (
+	"github.com/hybridgroup/gobot"
 	"github.com/hybridgroup/gobot/platforms/firmata"
 	"github.com/hybridgroup/gobot/platforms/gpio"
 )
@@ -16,7 +17,7 @@ var (
 	led6           *gpio.LedDriver
 )
 
-func InitArduino() {
+func Init() {
 	firmataAdaptor = firmata.NewFirmataAdaptor("arduino", "/dev/tty.usbmodem14141")
 
 	led1 = gpio.NewLedDriver(firmataAdaptor, "led", "4")
@@ -26,6 +27,14 @@ func InitArduino() {
 	led5 = gpio.NewLedDriver(firmataAdaptor, "led", "8")
 	led6 = gpio.NewLedDriver(firmataAdaptor, "led", "9")
 	leds = []*gpio.LedDriver{led1, led2, led3, led4, led5, led6}
+}
+
+func Devices() []gobot.Device {
+	return []gobot.Device{led1, led2, led3, led4, led5, led6}
+}
+
+func Connection() gobot.Connection {
+	return firmataAdaptor
 }
 
 func Leds() int {
