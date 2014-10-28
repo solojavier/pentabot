@@ -4,6 +4,7 @@ import (
 	"github.com/hybridgroup/gobot"
 	"github.com/hybridgroup/gobot/api"
 	"github.com/solojavier/pentabot/pentabot"
+	"time"
 )
 
 func main() {
@@ -21,6 +22,8 @@ func main() {
 	gbot.AddRobot(pentabot.CreateJoystick())
 	gbot.AddRobot(pentabot.CreatePebble())
 	gbot.AddRobot(pentabot.CreateLeap())
+
+	gobot.Every(500*time.Millisecond, pentabot.VerifyGoal)
 
 	gbot.Start()
 }

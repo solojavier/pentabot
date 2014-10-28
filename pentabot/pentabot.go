@@ -14,7 +14,9 @@ var (
 )
 
 func NextStage() string {
-	stageIndex += 1
+	if stageIndex < len(stages)-1 {
+		stageIndex += 1
+	}
 	stage := currentStage()
 	fmt.Println(stage)
 	return stage
