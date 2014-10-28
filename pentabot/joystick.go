@@ -1,7 +1,6 @@
 package pentabot
 
 import (
-	"fmt"
 	"github.com/hybridgroup/gobot"
 	"github.com/hybridgroup/gobot/platforms/joystick"
 	"math"
@@ -23,7 +22,6 @@ func CreateJoystick() *gobot.Robot {
 					speed := math.Max(math.Abs(x), math.Abs(y))
 					heading := 180.0 - (math.Atan2(y, x) * (180.0 / math.Pi))
 
-					fmt.Println(speed)
 					spheroRoll(scaleJoystick(speed), uint16(heading))
 				}
 			})

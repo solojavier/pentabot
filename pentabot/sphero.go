@@ -29,6 +29,7 @@ func CreateSphero() *gobot.Robot {
 
 					if powerLevel == len(leds) {
 						ledOn()
+						spheroDriver.SetRGB(0, 50, 150)
 						NextStage()
 					}
 				}
@@ -47,17 +48,17 @@ func CreateSphero() *gobot.Robot {
 				spheroDriver.Roll(100, 0)
 				message = "Moving up"
 			case "down":
-				spheroDriver.Roll(100, 90)
+				spheroDriver.Roll(100, 180)
 				message = "Moving down"
 			case "left":
-				spheroDriver.Roll(100, 180)
+				spheroDriver.Roll(100, 270)
 				message = "Moving left"
 			case "right":
-				spheroDriver.Roll(100, 270)
+				spheroDriver.Roll(100, 90)
 				message = "Moving right"
 			}
 
-			time.Sleep(3 * time.Second)
+			time.Sleep(2 * time.Second)
 			spheroDriver.Stop()
 			return message
 

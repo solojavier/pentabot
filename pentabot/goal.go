@@ -16,7 +16,7 @@ var (
 func VerifyGoal() {
 	var m map[string]string
 	url := "https://api.spark.io/v1/devices/53ff72065067544846101187/result?access_token=b8df700c30b45c4e46679cc91a702eb7d21842c8"
-	timeout := time.Duration(1 * time.Second)
+	timeout := time.Duration(3 * time.Second)
 	client := http.Client{
 		Timeout: timeout,
 	}
@@ -45,7 +45,7 @@ func VerifyGoal() {
 			return
 		}
 
-		if distance < 10 && !updatingStage {
+		if distance < 25 && !updatingStage {
 			updatingStage = true
 			NextStage()
 			time.AfterFunc(5*time.Second, func() {

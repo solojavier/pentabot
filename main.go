@@ -23,7 +23,7 @@ func main() {
 	gbot.AddRobot(pentabot.CreatePebble())
 	gbot.AddRobot(pentabot.CreateLeap())
 
-	gobot.Every(500*time.Millisecond, pentabot.VerifyGoal)
+	gobot.Every(800*time.Millisecond, pentabot.VerifyGoal)
 
 	gbot.Start()
 }
