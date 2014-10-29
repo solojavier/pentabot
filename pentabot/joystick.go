@@ -20,7 +20,7 @@ func CreateJoystick() *gobot.Robot {
 			gobot.Every(100*time.Millisecond, func() {
 				if currentStage() == "joystick" {
 					speed := math.Max(math.Abs(x), math.Abs(y))
-					heading := 180.0 - (math.Atan2(y, x) * (180.0 / math.Pi))
+					heading := 180.0 - (math.Atan2(x, y) * (180.0 / math.Pi))
 
 					spheroRoll(scaleJoystick(speed), uint16(heading))
 				}
@@ -28,13 +28,13 @@ func CreateJoystick() *gobot.Robot {
 
 			gobot.On(joystickDriver.Event("right_x"), func(data interface{}) {
 				if currentStage() == "joystick" {
-					x = float64(data.(int16)) - 128
+					x = float64(data.(int16))
 				}
 			})
 
 			gobot.On(joystickDriver.Event("right_y"), func(data interface{}) {
 				if currentStage() == "joystick" {
-					y = float64(data.(int16)) - 128
+					y = float64(data.(int16))
 				}
 			})
 		},

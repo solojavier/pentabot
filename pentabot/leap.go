@@ -23,7 +23,7 @@ func CreateLeap() *gobot.Robot {
 						x := hands[0].X()
 						z := hands[0].Z()
 						speed := math.Max(math.Abs(x), math.Abs(z))
-						heading := 180.0 - (math.Atan2(z, x) * (180.0 / math.Pi))
+						heading := 180.0 - (math.Atan2(x, z) * (180.0 / math.Pi))
 
 						spheroRoll(scaleLeap(speed), uint16(heading))
 					} else {

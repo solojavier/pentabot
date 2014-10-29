@@ -24,7 +24,7 @@ func CreatePebble() *gobot.Robot {
 					y, _ := strconv.ParseFloat(values[1], 64)
 
 					speed := math.Max(math.Abs(x), math.Abs(y))
-					heading := 180.0 - (math.Atan2(y, x) * (180.0 / math.Pi))
+					heading := 180.0 - (math.Atan2(x, y) * (180.0 / math.Pi))
 
 					spheroRoll(scalePebble(speed), uint16(heading))
 				}

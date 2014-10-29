@@ -67,6 +67,21 @@ func CreateSphero() *gobot.Robot {
 		}
 	})
 
+	robot.AddCommand("start_calibration", func(params map[string]interface{}) interface{} {
+		spheroDriver.SetBackLED(127)
+		spheroDriver.SetStabilization(false)
+
+		return "Move sphero manually"
+	})
+
+	robot.AddCommand("finish_calibration", func(params map[string]interface{}) interface{} {
+		spheroDriver.SetHeading(0)
+		spheroDriver.SetBackLED(0)
+		spheroDriver.SetStabilization(true)
+
+		return "Done. Ready to roll!"
+	})
+
 	return robot
 }
 
